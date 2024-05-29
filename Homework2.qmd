@@ -1,0 +1,80 @@
+---
+title: "Homework2"
+format: html
+editor: visual
+---
+
+## Task 1
+
+```{r}
+pre_bp = c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
+post_bp = c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
+patient = paste("Subject", 1:20, sep = "_")
+diff_bp = post_bp - pre_bp
+diff_mean = mean(diff_bp)
+
+indices = which(diff_bp < 0)
+indices
+patient[indices]
+
+pos_diffs = diff_bp[-indices]
+```
+
+4.  The mean difference in blood pressure from pre-treatment to post-treatment was found to be **`r diff_mean`**
+
+5.  The subset of Subjects that had a higher blood pressure post-treatment were `r patient[-indices]`
+
+6.  The mean difference in blood pressure post-treatment for those who saw an increase in blood pressure was found to be **`r mean(pos_diffs)`**.
+
+## Task 2
+
+```{r}
+bp_dataframe = data.frame(patient, pre_bp, post_bp, diff_bp)
+
+subset(bp_dataframe,diff_bp < 0)
+
+bp_dataframe$low_bp = ifelse(bp_dataframe$post_bp < 120, TRUE, FALSE)
+bp_dataframe
+
+knitr::kable(bp_dataframe)
+```
+
+## Task 3
+
+```{r}
+pre = c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+post = c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+patient = paste("Subject", 1:10, sep = "_")
+diffs = post - pre
+
+placebo = data.frame(patient,pre,post,diffs)
+placebo$low_bp = ifelse(placebo$post < 120, TRUE, FALSE)
+
+new_list = list(treatment = bp_dataframe, placebo = placebo)
+
+new_list[1]
+new_list[[1]]
+new_list$treatment
+
+new_list$placebo[,2]
+```
+
+## Task 4
+
+```{r}
+new_list$treatment$status = character(20)
+new_list$placebo$status = character(10)
+
+for(i in seq_along(new_list$treatment$status)){
+  ifelse(new_list$treatment$post_bp[i] <= 120, new_list$treatment$status[i] == "optimal",
+         ifelse(new_list$treatment$post_bp[i] <= 130, new_list$treatment$status[i] == "borderline", new_list$treatment$status[i] == "high"))
+}
+
+for(i in seq_along(new_list$placebo$status)){
+  ifelse(new_list$placebo$post[i] <= 120, new_list$placebo$status[i] == "optimal",
+         ifelse(new_list$placebo$post[i] <= 130, new_list$placebo$status[i] == "borderline", new_list$placebo$status[i] == "high"))
+}
+```
+
+## Task 5
+I was unable to get to this part of the assignment and should have asked for an extension earlier. 
